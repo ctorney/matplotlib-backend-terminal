@@ -1,1 +1,1 @@
-matplotlib-backend-sixel/__init__.py
+matplotlib-backend-terminal/__init__.py
