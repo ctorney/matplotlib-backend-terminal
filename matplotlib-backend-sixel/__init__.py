@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: CC0-1.0
 
-import sys
+import sys, os
 
-from subprocess import Popen, PIPE
+from io import BytesIO
+from subprocess import run
 import warnings
 
 from matplotlib import interactive, is_interactive
@@ -15,29 +16,31 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 if sys.flags.interactive:
     interactive(True)
 
+TIMG_OPTS = os.getenv("MPLBACKEND_TIMG_OPTS", "")
 
-class FigureManagerSixel(FigureManagerBase):
+
+class FigureManagerTerminal(FigureManagerBase):
     def show(self):
         try:
-            print('\n   ', end='')
-            p = Popen(["magick", "-bordercolor", "gray", "png:-", "-border", "2", "sixel:-"], stdin=PIPE)
-            self.canvas.figure.savefig(p.stdin, bbox_inches="tight", format="png")
-            p.stdin.close()
-            p.wait()
+            # print('\n   ', end='')
+            cmd = ["timg"] + TIMG_OPTS.split() + ["-"]
+            with BytesIO() as buf:
+                self.canvas.figure.savefig(buf, format="png")
+                run(cmd, input=buf.getbuffer())
         except FileNotFoundError:
             warnings.warn(
-                "Unable to convert plot to sixel format: Imagemagick not found."
+                "Unable to plot to terminal: timg not found."
             )
 
 
-class FigureCanvasSixel(FigureCanvasAgg):
-    manager_class = FigureManagerSixel
+class FigureCanvasTerminal(FigureCanvasAgg):
+    manager_class = FigureManagerTerminal
 
 
 @_Backend.export
-class _BackendSixelAgg(_Backend):
-    FigureCanvas = FigureCanvasSixel
-    FigureManager = FigureManagerSixel
+class _BackendTerminalAgg(_Backend):
+    FigureCanvas = FigureCanvasTerminal
+    FigureManager = FigureManagerTerminal
 
     # Noop function instead of None signals that
     # this is an "interactive" backend
