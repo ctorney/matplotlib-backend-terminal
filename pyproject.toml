@@ -1,7 +1,7 @@
 [project]
-name = "matplotlib-backend-sixel"
-version = "1.0.0"
-description = "show matplotlib plots directly in your sixel-enabled terminal"
+name = "matplotlib-backend-terminal"
+version = "0.1.0"
+description = "show matplotlib plots directly in ipython in your terminal"
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -12,8 +12,8 @@ classifiers = [
 dependencies = [ "matplotlib" ]
 
 [project.urls]
-"Homepage" = "https://github.com/ctorney/matplotlib-backend-sixel"
-"Bug Tracker" = "https://github.com/ctorney/matplotlib-backend-sixel/issues"
+"Homepage" = "https://github.com/ctorney/matplotlib-backend-terminal"
+"Bug Tracker" = "https://github.com/ctorney/matplotlib-backend-terminal/issues"
 
 [build-system]
 requires = [ "setuptools>=61.0" ]
