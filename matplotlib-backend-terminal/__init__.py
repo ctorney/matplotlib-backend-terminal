@@ -16,16 +16,17 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 if sys.flags.interactive:
     interactive(True)
 
-TIMG_OPTS = os.getenv("MPLBACKEND_TIMG_OPTS", "")
+CHAFA_OPTS = os.getenv("MPLBACKEND_CHAFA_OPTS", "")
+TRANSPARENT = os.getenv("MPLBACKEND_TRANSPARENT", "0").lower()
+TRANSPARENT = bool(TRANSPARENT == "true" or TRANSPARENT == "1")
 
 
 class FigureManagerTerminal(FigureManagerBase):
     def show(self):
         try:
-            # print('\n   ', end='')
-            cmd = ["timg"] + TIMG_OPTS.split() + ["-"]
+            cmd = ["chafa"] + CHAFA_OPTS.split() + ["-"]
             with BytesIO() as buf:
-                self.canvas.figure.savefig(buf, format="png")
+                self.canvas.figure.savefig(buf, format='png', transparent=TRANSPARENT)
                 run(cmd, input=buf.getbuffer())
         except FileNotFoundError:
             warnings.warn(
